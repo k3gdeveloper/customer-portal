@@ -11,6 +11,9 @@ export default {
     ],
     theme: {
         extend: {
+            transitionProperty: {
+                opacity: "opacity",
+            },
             fontFamily: {
                 sans: ["Poppins", ...defaultTheme.fontFamily.sans],
             },

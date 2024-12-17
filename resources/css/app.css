@@ -5,3 +5,13 @@
 body {
     font-family: "Poppins", sans-serif;
 }
+
+@layer components {
+    .btn-custom {
+        @apply px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600;
+    }
+
+    .btn-deselected {
+        @apply bg-gray-300 text-gray-600;
+    }
+}

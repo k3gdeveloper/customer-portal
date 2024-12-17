@@ -11,7 +11,7 @@ class MapDashboardController extends Controller
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'oj9kjfjq4q79p7ulksnqcd1und';
+        $sessionToken = 'q0n8b38056881ek9b5p007lsid';
 
         // Faça a requisição GET para a API dos tickets com os tokens no header
         $ticketsResponse = Http::withHeaders([
@@ -53,6 +53,8 @@ class MapDashboardController extends Controller
                     $ticket['longitude'] = $location['longitude'];
                     $ticket['completename'] = $location['completename'] ?? 'Nome completo não disponível';
                     $ticket['incidents'] = $incidentCount[$ticket['locations_id']] ?? 0;
+                    $ticket['name'] = $ticket['name'];
+                    $ticket['status'] = $ticket['status'];
                 }
                 return $ticket;
             })->all();
