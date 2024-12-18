@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'oj9kjfjq4q79p7ulksnqcd1und';
+        $sessionToken = 'tokea8nlt43dsh37gmn556ci5s';
 
         // Obtenha o entities_id do usuário logado
         $entitiesId = Auth::user()->entities_id;
