@@ -17,6 +17,7 @@
                                 class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
+
                         <div class="flex items-center gap-4">
                             <button id="filter-button"
                                 class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -90,7 +91,7 @@
                 attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            const tickets = @json($tickets); // Carregar tickets do Blade
+            const tickets = @json($tickets);
 
             const statuses = {
                 1: 'Novo',
@@ -103,11 +104,10 @@
 
             let markerGroup = L.layerGroup().addTo(map);
             let heatLayer;
-            let currentVisibleLocation = null; // Variável para rastrear a localização visível
+            let currentVisibleLocation = null;
 
             const buttonsContainer = document.getElementById('location-buttons');
 
-            // Função para atualizar os detalhes dos tickets
             function updateTicketDetails(location, locationTickets) {
                 const ticketDetails = document.getElementById('ticket-details');
                 const ticketInfo = document.getElementById('ticket-info');
@@ -118,7 +118,6 @@
                 ticketDetails.classList.remove('hidden', 'opacity-0');
                 ticketDetails.classList.add('opacity-100');
 
-                // Filtrando os tickets de acordo com a escolha do filtro
                 function applyFilter(filteredTickets) {
                     let detailsHtml = `<b>${location}</b><br><br>`;
                     detailsHtml += `<b>Total de Tickets:</b> ${filteredTickets.length}<br><br>`;
@@ -134,7 +133,6 @@
                     ticketInfo.innerHTML = detailsHtml;
                 }
 
-                // Aplicando o filtro de ID
                 filterSelect.addEventListener('change', function() {
                     let filteredTickets = [...locationTickets];
 
@@ -151,7 +149,6 @@
                     applyFilter(filteredTickets);
                 });
 
-                // Aplicando filtro de status
                 statusSelect.addEventListener('change', function() {
                     let filteredTickets = [...locationTickets];
                     filteredTickets = filteredTickets.filter(ticket => ticket.status === parseInt(
@@ -159,10 +156,8 @@
                     applyFilter(filteredTickets);
                 });
 
-                // Aplicando o filtro inicial
                 applyFilter(locationTickets);
             }
-
 
             document.getElementById('close-details').onclick = function() {
                 const ticketDetails = document.getElementById('ticket-details');
@@ -177,7 +172,7 @@
                 let markers = {};
                 let heatData = [];
 
-                buttonsContainer.innerHTML = ''; // Limpa botões existentes
+                buttonsContainer.innerHTML = '';
 
                 tickets.forEach(ticket => {
                     if (ticket.latitude && ticket.longitude) {
@@ -195,7 +190,6 @@
 
                     marker.addTo(markerGroup);
 
-                    // Criação dos botões
                     const button = document.createElement('button');
                     button.classList.add('btn-custom');
                     button.innerText = location;
@@ -235,7 +229,6 @@
                     buttonsContainer.appendChild(button);
                 });
 
-                // Adicionar mapa de calor
                 heatLayer = L.heatLayer(heatData, {
                     radius: 25,
                     blur: 15,
@@ -250,12 +243,10 @@
                 }).addTo(map);
             }
 
-            // Filtro de datas e outros filtros
             document.getElementById('filter-button').addEventListener('click', () => {
                 const startDate = new Date(document.getElementById('start-date').value);
                 const endDate = new Date(document.getElementById('end-date').value);
-                const sortOrder = document.getElementById('sort-order').value;
-                const statusFilter = document.getElementById('status-filter').value;
+                const statusSelectValue = document.getElementById('status-select').value;
 
                 let filteredTickets = tickets;
 
@@ -266,29 +257,23 @@
                     });
                 }
 
-                if (statusFilter) {
-                    filteredTickets = filteredTickets.filter(ticket => ticket.status == statusFilter);
+                if (statusSelectValue) {
+                    filteredTickets = filteredTickets.filter(ticket => ticket.status === parseInt(
+                        statusSelectValue));
                 }
 
-                if (sortOrder === 'id-asc') {
-                    filteredTickets = filteredTickets.sort((a, b) => a.id - b.id);
-                } else if (sortOrder === 'id-desc') {
-                    filteredTickets = filteredTickets.sort((a, b) => b.id - a.id);
-                }
-
+                console.log('Filtered Tickets:',
+                    filteredTickets); // Log para depurar o número de tickets filtrados
                 addMarkers(filteredTickets);
             });
 
-            // Limpar filtros
             document.getElementById('clear-filters').addEventListener('click', () => {
                 document.getElementById('start-date').value = '';
                 document.getElementById('end-date').value = '';
-                document.getElementById('sort-order').value = 'id-asc';
-                document.getElementById('status-filter').value = '';
+                document.getElementById('status-select').value = '';
                 addMarkers(tickets);
             });
 
-            // Carrega os marcadores iniciais
             addMarkers(tickets);
         });
     </script>

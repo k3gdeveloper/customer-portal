@@ -21,8 +21,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Sidebar & Navbar Styles -->
-    <link rel="stylesheet" href="{{ asset('template/css/style.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/material-dashboard.css') }}">
+    {{--     <link rel="stylesheet" href="{{ asset('template/css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/material-dashboard.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
 </head>
