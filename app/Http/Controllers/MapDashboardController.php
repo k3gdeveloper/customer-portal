@@ -11,7 +11,7 @@ class MapDashboardController extends Controller
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'tokea8nlt43dsh37gmn556ci5s';
+        $sessionToken = 'ag78ls204o0m0bbtbbhmkjvagi';
 
         // Faça a requisição GET para a API dos tickets com os tokens no header
         $ticketsResponse = Http::withHeaders([
