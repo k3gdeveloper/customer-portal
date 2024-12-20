@@ -50,25 +50,32 @@
                             </button>
                         </div>
                         <div class="sidebar-body">
+
                             <ul class="sidebar-body-menu">
                                 <li>
                                     <a class="active" href="/"><span class="icon home"
                                             aria-hidden="true"></span>Dashboard</a>
                                 </li>
+                            </ul>
+                            <ul class="sidebar-body-menu">
+
+                                <span class="system-menu__title">Monitoramento</span>
                                 <li>
                                     <a class="show-cat-btn" href="#">
-                                        <span class="icon document" aria-hidden="true"></span>Posts
+                                        <span class="icon document" aria-hidden="true"></span>Monitor
                                         <span class="category__btn transparent-btn" title="Open list">
                                             <span class="sr-only">Open list</span>
                                             <span class="icon arrow-down" aria-hidden="true"></span>
                                         </span>
                                     </a>
                                     <ul class="cat-sub-menu">
-                                        <li><a href="posts.html">All Posts</a></li>
-                                        <li><a href="new-post.html">Add new post</a></li>
+                                        <li><a href="map-dashboard">Mapa</a></li>
+                                        <li><a href="dashboard">Tickets</a></li>
+                                        <li><a href="new-post.html">Gráfico</a></li>
                                     </ul>
                                 </li>
-                                <li>
+
+                                {{--                                 <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon folder" aria-hidden="true"></span>Categories
                                         <span class="category__btn transparent-btn" title="Open list">
@@ -79,8 +86,8 @@
                                     <ul class="cat-sub-menu">
                                         <li><a href="categories.html">All categories</a></li>
                                     </ul>
-                                </li>
-                                <li>
+                                </li> --}}
+                                {{--                                 <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon image" aria-hidden="true"></span>Media
                                         <span class="category__btn transparent-btn" title="Open list">
@@ -92,8 +99,8 @@
                                         <li><a href="media-01.html">Media-01</a></li>
                                         <li><a href="media-02.html">Media-02</a></li>
                                     </ul>
-                                </li>
-                                <li>
+                                </li> --}}
+                                {{--                                 <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon paper" aria-hidden="true"></span>Pages
                                         <span class="category__btn transparent-btn" title="Open list">
@@ -105,21 +112,21 @@
                                         <li><a href="pages.html">All pages</a></li>
                                         <li><a href="new-page.html">Add new page</a></li>
                                     </ul>
-                                </li>
-                                <li>
+                                </li> --}}
+                                {{--                                 <li>
                                     <a href="comments.html">
                                         <span class="icon message" aria-hidden="true"></span>Comments
                                     </a>
                                     <span class="msg-counter">7</span>
-                                </li>
+                                </li> --}}
                             </ul>
                             <span class="system-menu__title">system</span>
                             <ul class="sidebar-body-menu">
-                                <li>
+                                {{--                                 <li>
                                     <a href="appearance.html"><span class="icon edit"
                                             aria-hidden="true"></span>Appearance</a>
-                                </li>
-                                <li>
+                                </li> --}}
+                                {{--                                 <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon category" aria-hidden="true"></span>Extentions
                                         <span class="category__btn transparent-btn" title="Open list">
@@ -131,7 +138,7 @@
                                         <li><a href="extention-01.html">Extentions-01</a></li>
                                         <li><a href="extention-02.html">Extentions-02</a></li>
                                     </ul>
-                                </li>
+                                </li> --}}
                                 <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon user-3" aria-hidden="true"></span>Users
@@ -181,7 +188,7 @@
                                     <span class="sr-only">Toggle menu</span>
                                     <span class="icon menu-toggle--gray" aria-hidden="true"></span>
                                 </button>
-                                <div class="lang-switcher-wrapper">
+                                {{--                              <div class="lang-switcher-wrapper">
                                     <button class="lang-switcher transparent-btn" type="button">
                                         EN
                                         <i data-feather="chevron-down" aria-hidden="true"></i>
@@ -191,7 +198,7 @@
                                         <li><a href="##">French</a></li>
                                         <li><a href="##">Uzbek</a></li>
                                     </ul>
-                                </div>
+                                </div> --}}
                                 <button class="theme-switcher gray-circle-btn" type="button" title="Switch theme">
                                     <span class="sr-only">Switch theme</span>
                                     <i class="sun-icon" data-feather="sun" aria-hidden="true"></i>
@@ -277,6 +284,12 @@
                         </div>
                     </nav>
 
+
+
+                    <!-- Main Content -->
+                    <main id="main-content">
+                        @yield('content')
+                    </main>
                     <!-- ! Footer -->
                     <footer class="footer">
                         <div class="container footer--flex">
@@ -291,12 +304,6 @@
                             </ul>
                         </div>
                     </footer>
-                    <!-- Main Content -->
-                    <main id="main-content" class="w-full flex-grow p-6 transition-all duration-300">
-                        @yield('content')
-                    </main>
-
-
                 </div>
             </div>
         @else
@@ -311,30 +318,7 @@
     <script src="plugins/feather.min.js"></script>
     <script src="js/script.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleSidebarButton = document.querySelector('.sidebar-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            const dropdownButtons = document.querySelectorAll('.show-cat-btn');
 
-            if (toggleSidebarButton && sidebar) {
-                toggleSidebarButton.addEventListener('click', () => {
-                    sidebar.classList.toggle('w-1/4');
-                    sidebar.classList.toggle('w-12');
-                });
-            }
-
-            dropdownButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const submenu = button.nextElementSibling;
-                    if (submenu) {
-                        submenu.classList.toggle('hidden');
-                    }
-                });
-            });
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const yearSpan = document.getElementById('current-year');
@@ -342,6 +326,7 @@
             yearSpan.textContent = currentYear;
         });
     </script>
+
 </body>
 
 </html>

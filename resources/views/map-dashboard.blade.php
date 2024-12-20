@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mx-auto p-4">
         <div class="flex flex-col items-center">
-            <div class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="w-full bg-white shadow-md rounded-lg ">
                 <div class="bg-gray-800 text-white py-4 px-6 text-lg font-semibold">
                     {{ __('Incidentes por localidade') }}
                 </div>
@@ -34,9 +34,8 @@
                         <div id="map" class="w-full h-96 rounded-md shadow-md mb-4"></div>
 
                         <!-- Detalhes dos Tickets -->
-                        <!-- Detalhes dos Tickets -->
                         <div id="ticket-details"
-                            class="w-1/3 bg-white p-4 rounded-md shadow-md ml-4 hidden max-h-96 overflow-y-auto transition-opacity opacity-0">
+                            class="w-1/3 bg-white p-4 rounded-md shadow-md ml-4  max-h-96 overflow-y-auto transition-opacity hidden opacity-0">
                             <button id="close-details" class="text-red-500 hover:text-red-800">&times;</button>
                             <h4 class="text-lg font-semibold mb-2">Detalhes dos Tickets</h4>
 
@@ -49,7 +48,7 @@
                                     <option value="id-desc">ID Decrescente</option>
                                     <option value="status">Por Status</option>
                                 </select>
-                                <div id="status-filter" class="hidden">
+                                <div id="status-filter">
                                     <label for="status-select" class="font-semibold">Escolha o Status:</label>
                                     <select id="status-select"
                                         class="form-select w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -294,3 +293,7 @@
         });
     </script>
 @endsection
+
+@push('vite')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@endpush
