@@ -1847,11 +1847,16 @@ input:focus {
     box-shadow: 0 0 0 2px rgba(134, 182, 254, 0.5);
 }
 
-input:enabled:read-write:-webkit-any(
+/* input:enabled:read-write:-webkit-any(
         :focus,
         :hover
     )::-webkit-calendar-picker-indicator {
     display: none !important;
+} */
+
+/* Estilizando o ícone do input de data */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Inverte a cor do ícone para branco */
 }
 
 .check {
