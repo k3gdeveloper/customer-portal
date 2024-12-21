@@ -8,27 +8,26 @@
                     {{ __('Incidentes por localidade') }}
                 </div>
                 <div class="p-6">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
                         <!-- Filtros -->
-                        <div class="flex gap-4 items-center">
-                            <input type="date" id="start-date"
-                                class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <input type="date" id="end-date"
-                                class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
+                        <form action="{{ route('map-dashboard') }}" method="GET" id="filter-form">
+                            <div class="flex gap-4 items-center" id="filter-button">
+                                <input type="date" name="start_date" id="start-date"
+                                    class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="date" name="end_date" id="end-date"
+                                    class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    Filtrar
+                                </button>
+                                <button type="button" id="clear-filters" onclick="clearFilters()"
+                                    class="bg-gray-400 text-white px-6 py-2 rounded shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                    Limpar Filtros
+                                </button>
+                            </div>
 
 
-                        <div class="flex items-center gap-4">
-                            <button id="filter-button"
-                                class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                Filtrar
-                            </button>
-                            <!-- Botão de Remover Filtro -->
-                            <button id="clear-filters"
-                                class="bg-gray-400 text-white px-6 py-2 rounded shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                Limpar Filtros
-                            </button>
-                        </div>
+                        </form>
                     </div>
                     <div class="flex gap-4">
                         <!-- Mapa -->
@@ -108,6 +107,7 @@
 
             const buttonsContainer = document.getElementById('location-buttons');
 
+            // Função para adicionar marcadores no mapa
             function updateTicketDetails(location, locationTickets) {
                 const ticketDetails = document.getElementById('ticket-details');
                 const ticketInfo = document.getElementById('ticket-info');
@@ -164,6 +164,7 @@
                 ticketDetails.classList.add('opacity-0', 'hidden');
                 ticketDetails.classList.remove('opacity-100');
             };
+
 
             function addMarkers(tickets) {
                 markerGroup.clearLayers();
@@ -243,38 +244,36 @@
                 }).addTo(map);
             }
 
-            document.getElementById('filter-button').addEventListener('click', () => {
+            // Inicializa o mapa com todos os tickets
+            addMarkers(tickets);
+
+            // Ação para o botão de limpar filtros
+            document.getElementById('clear-filters').addEventListener('click', () => {
+                document.getElementById('start-date').value = '';
+                document.getElementById('end-date').value = '';
+                addMarkers(tickets); // Re-adiciona todos os tickets ao mapa
+            });
+
+            // Atualiza o mapa quando o botão de filtro é acionado
+            document.getElementById('filter-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Evita o reload da página
+
                 const startDate = new Date(document.getElementById('start-date').value);
                 const endDate = new Date(document.getElementById('end-date').value);
-                const statusSelectValue = document.getElementById('status-select').value;
 
                 let filteredTickets = tickets;
 
                 if (!isNaN(startDate) && !isNaN(endDate)) {
                     filteredTickets = filteredTickets.filter(ticket => {
-                        const ticketDate = new Date(ticket.date);
+                        const ticketDate = new Date(ticket
+                            .date_creation); // Use a data correta no ticket
                         return ticketDate >= startDate && ticketDate <= endDate;
                     });
                 }
 
-                if (statusSelectValue) {
-                    filteredTickets = filteredTickets.filter(ticket => ticket.status === parseInt(
-                        statusSelectValue));
-                }
-
-                console.log('Filtered Tickets:',
-                    filteredTickets); // Log para depurar o número de tickets filtrados
+                console.log('Filtered Tickets:', filteredTickets); // Log para depuração
                 addMarkers(filteredTickets);
             });
-
-            document.getElementById('clear-filters').addEventListener('click', () => {
-                document.getElementById('start-date').value = '';
-                document.getElementById('end-date').value = '';
-                document.getElementById('status-select').value = '';
-                addMarkers(tickets);
-            });
-
-            addMarkers(tickets);
         });
     </script>
 @endsection

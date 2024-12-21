@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class MapDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'ag78ls204o0m0bbtbbhmkjvagi';
+        $sessionToken = 'asdg9jl2utqavcappimtf226d1';
+
+        // Capture as datas de início e fim do request
+        $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
+        $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : null;
 
         // Faça a requisição GET para a API dos tickets com os tokens no header
         $ticketsResponse = Http::withHeaders([
@@ -35,9 +40,17 @@ class MapDashboardController extends Controller
                 return [$location['id'] => $location];
             });
 
-            // Filtre os tickets para incluir aqueles cujos locations_id estão presentes nas localizações
-            $filteredTickets = collect($tickets)->filter(function ($ticket) use ($locationMap) {
-                return $locationMap->has($ticket['locations_id']);
+            // Filtrar os tickets incluindo a lógica de data
+            $filteredTickets = collect($tickets)->filter(function ($ticket) use ($locationMap, $startDate, $endDate) {
+                if ($locationMap->has($ticket['locations_id'])) {
+                    $ticketDate = Carbon::parse($ticket['date_creation']);
+                    if ($startDate && $endDate) {
+                        return $ticketDate->between($startDate, $endDate);
+                    }
+                    // Se não houver filtro de data, inclui todos os tickets válidos
+                    return true;
+                }
+                return false;
             })->values();
 
             // Contar o número de incidentes por localização
@@ -55,6 +68,7 @@ class MapDashboardController extends Controller
                     $ticket['incidents'] = $incidentCount[$ticket['locations_id']] ?? 0;
                     $ticket['name'] = $ticket['name'];
                     $ticket['status'] = $ticket['status'];
+                    // Inclua outros campos, como `date_creation`, se necessário
                 }
                 return $ticket;
             })->all();
