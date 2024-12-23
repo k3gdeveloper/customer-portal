@@ -8,6 +8,20 @@
                     {{ __('Incidentes por localidade') }}
                 </div>
                 <div class="p-6">
+                    <!-- Modal de Detalhes do Ticket -->
+                    <div id="ticket-modal"
+                        class="fixed inset-0 flex hidden items-center justify-center z-10 transition-opacity duration-300 ease-in-out">
+                        <div class="bg-gray-800 bg-opacity-75 w-full h-full absolute"></div>
+                        <div
+                            class="bg-white p-6 rounded-lg max-w-lg w-full shadow-xl relative z-20 transform transition-all">
+                            <button id="close-modal" aria-label="Fechar modal"
+                                class="text-gray-500 hover:text-red-600 absolute top-3 right-3 text-xl focus:outline-none">&times;</button>
+                            <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Detalhes do Ticket</h3>
+                            <div id="modal-ticket-details" class="text-gray-700 space-y-4">
+                                <!-- Conteúdo específico dos detalhes do ticket -->
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
                         <!-- Filtros -->
                         <form action="{{ route('map-dashboard') }}" method="GET" id="filter-form">
@@ -36,9 +50,10 @@
                         </script>
 
                     </div>
+
                     <div class="flex gap-4">
                         <!-- Mapa -->
-                        <div id="map" class="w-full h-96 rounded-md shadow-md mb-4"></div>
+                        <div id="map" class="w-full h-96 rounded-md shadow-md mb-4 z-0"></div>
 
                         <!-- Detalhes dos Tickets -->
                         <div id="ticket-details"
@@ -125,12 +140,32 @@
                 ticketDetails.classList.remove('hidden', 'opacity-0');
                 ticketDetails.classList.add('opacity-100');
 
+                function openModalWithDetails(ticket) {
+                    const modal = document.getElementById('ticket-modal');
+                    const modalDetails = document.getElementById('modal-ticket-details');
+
+                    let modalContent = `
+                       <p><b>ID:</b> ${ticket.id}</p>
+                       <p><b>Name:</b> ${ticket.name}</p>
+                       <p><b>Date:</b> ${ticket.date_creation}</p>
+                       <p><b>Status:</b> ${statuses[ticket.status] || 'Unknown'}</p>
+                       <p><b>Content:</b> ${ticket.content}</p>
+                       <!-- Add more details as needed -->
+                   `;
+
+                    modalDetails.innerHTML = modalContent;
+                    modal.classList.add('open');
+                    modal.classList.remove('hidden');
+                }
+
                 function applyFilter(filteredTickets) {
                     let detailsHtml = `<b>${location}</b><br><br>`;
                     detailsHtml += `<b>Total de Tickets:</b> ${filteredTickets.length}<br><br>`;
                     detailsHtml += filteredTickets.map(ticket => {
                         const statusText = statuses[ticket.status] || 'Status desconhecido';
-                        return `<b>${ticket.id}.</b> ${ticket.name} (Status: ${statusText})`;
+                        return `<b><a href="#" class="ticket-link" data-id="${ticket.id}">${ticket.id}.</a></b>
+                           <a href="#" class="ticket-link" data-id="${ticket.id}">${ticket.name}</a>
+                           (Status: ${statusText})`;
                     }).join('<br><br>');
 
                     if (filteredTickets.length === 0) {
@@ -138,11 +173,29 @@
                     }
 
                     ticketInfo.innerHTML = detailsHtml;
+
+                    // Add click event listeners to each ticket link
+                    document.querySelectorAll('.ticket-link').forEach(link => {
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const ticketId = this.getAttribute('data-id');
+                            const ticket = filteredTickets.find(t => t.id === parseInt(ticketId));
+                            if (ticket) {
+                                openModalWithDetails(ticket);
+                            }
+                        });
+                    });
                 }
+
+                // Initialize modal close event
+                document.getElementById('close-modal').addEventListener('click', function() {
+                    const modal = document.getElementById('ticket-modal');
+                    modal.classList.remove('open');
+                    modal.classList.add('hidden');
+                });
 
                 filterSelect.addEventListener('change', function() {
                     let filteredTickets = [...locationTickets];
-
                     if (filterSelect.value === 'id-asc') {
                         filteredTickets.sort((a, b) => a.id - b.id);
                     } else if (filterSelect.value === 'id-desc') {
@@ -165,7 +218,6 @@
 
                 applyFilter(locationTickets);
             }
-
             document.getElementById('close-details').onclick = function() {
                 const ticketDetails = document.getElementById('ticket-details');
                 ticketDetails.classList.add('opacity-0', 'hidden');
@@ -213,7 +265,7 @@
                                     .bindPopup(
                                         `<b>${loc}</b><br>Incidentes: ${locTickets.length}`)
                                     .on('click', () => updateTicketDetails(loc,
-                                    locTickets)); // Ensure updateTicketDetails is called
+                                        locTickets)); // Ensure updateTicketDetails is called
                                 locMarker.addTo(markerGroup);
                             });
 
