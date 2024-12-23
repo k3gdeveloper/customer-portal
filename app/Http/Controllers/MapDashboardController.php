@@ -12,9 +12,9 @@ class MapDashboardController extends Controller
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'asdg9jl2utqavcappimtf226d1';
+        $sessionToken = 'l694qn6goqt6d08ao4ekdjiqvs';
 
-        // Capture as datas de início e fim do request
+        // Obtenha as datas de início e fim do request
         $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
         $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : null;
 
@@ -40,7 +40,7 @@ class MapDashboardController extends Controller
                 return [$location['id'] => $location];
             });
 
-            // Filtrar os tickets incluindo a lógica de data
+            // Se os filtros de data não forem fornecidos, use o mês e ano atuais
             $filteredTickets = collect($tickets)->filter(function ($ticket) use ($locationMap, $startDate, $endDate) {
                 if ($locationMap->has($ticket['locations_id'])) {
                     $ticketDate = Carbon::parse($ticket['date_creation']);
@@ -68,7 +68,6 @@ class MapDashboardController extends Controller
                     $ticket['incidents'] = $incidentCount[$ticket['locations_id']] ?? 0;
                     $ticket['name'] = $ticket['name'];
                     $ticket['status'] = $ticket['status'];
-                    // Inclua outros campos, como `date_creation`, se necessário
                 }
                 return $ticket;
             })->all();

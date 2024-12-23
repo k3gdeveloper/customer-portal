@@ -25,9 +25,16 @@
                                     Limpar Filtros
                                 </button>
                             </div>
-
-
                         </form>
+
+                        <script>
+                            function clearFilters() {
+                                document.getElementById('start-date').value = '';
+                                document.getElementById('end-date').value = '';
+                                document.getElementById('filter-form').submit();
+                            }
+                        </script>
+
                     </div>
                     <div class="flex gap-4">
                         <!-- Mapa -->
@@ -198,19 +205,27 @@
                     button.onclick = function() {
                         if (currentVisibleLocation === location) {
                             markerGroup.clearLayers();
+                            // Re-add all markers
                             Object.keys(markers).forEach(loc => {
                                 const locTickets = markers[loc];
                                 const locMarker = L.marker([locTickets[0].latitude, locTickets[
                                         0].longitude])
                                     .bindPopup(
                                         `<b>${loc}</b><br>Incidentes: ${locTickets.length}`)
-                                    .on('click', () => updateTicketDetails(loc, locTickets));
+                                    .on('click', () => updateTicketDetails(loc,
+                                    locTickets)); // Ensure updateTicketDetails is called
                                 locMarker.addTo(markerGroup);
                             });
 
                             currentVisibleLocation = null;
                             buttonsContainer.querySelectorAll('button').forEach(btn => btn.classList
                                 .remove('btn-deselected'));
+
+                            // Hide the details if any location is deselected
+                            const ticketDetails = document.getElementById('ticket-details');
+                            ticketDetails.classList.add('opacity-0', 'hidden');
+                            ticketDetails.classList.remove('opacity-100');
+
                         } else {
                             markerGroup.clearLayers();
                             const singleMarker = L.marker([locationTickets[0].latitude, locationTickets[
@@ -224,6 +239,9 @@
                             buttonsContainer.querySelectorAll('button').forEach(btn => btn.classList
                                 .add('btn-deselected'));
                             button.classList.remove('btn-deselected');
+
+                            // Update details: Ensure ticket details are updated and visible
+                            updateTicketDetails(location, locationTickets);
                         }
                     };
 
