@@ -12,7 +12,7 @@ class MapDashboardController extends Controller
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'l694qn6goqt6d08ao4ekdjiqvs';
+        $sessionToken = 'ugs6a1ad2ehhnu919osantvvmn';
 
         // Obtenha as datas de início e fim do request
         $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
