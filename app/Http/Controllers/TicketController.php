@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Link; // Certifique-se de ter o modelo Link
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
-class DashboardController extends Controller
+class TicketController extends Controller
 {
     public function index(Request $request)
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'ugs6a1ad2ehhnu919osantvvmn';
+        $sessionToken = 'nf2bnbj4hq7aujkka596vej44n';
 
         // Obtenha o entities_id do usuário logado
         $entitiesId = Auth::user()->entities_id;
@@ -55,8 +56,13 @@ class DashboardController extends Controller
             $filteredTickets = collect();
         }
 
+        // Buscar o ID do gráfico na tabela links
+        $link = Link::where('user_id', auth()->id())->first();
+        $ticketId = $link ? $link->ticket : '';
+
         // Passe os dados filtrados para a view
-        return view('dashboard', ['tickets' => $filteredTickets]);
+        return view('ticket', ['tickets' => $filteredTickets, 'ticketId' => $ticketId]);
+
     }
 
     private function formatSolveDelay($seconds)

@@ -69,9 +69,9 @@
                                         </span>
                                     </a>
                                     <ul class="cat-sub-menu">
-                                        <li><a href="map-dashboard">Mapa</a></li>
-                                        <li><a href="dashboard">Tickets</a></li>
-                                        <li><a href="new-post.html">Gráfico</a></li>
+                                        <li><a href="map">Mapa</a></li>
+                                        <li><a href="ticket">Tickets</a></li>
+                                        <li><a href="graphic">Gráfico</a></li>
                                     </ul>
                                 </li>
 
