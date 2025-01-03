@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Link; // Certifique-se de ter o modelo Link
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
-class MapDashboardController extends Controller
+class GraphicController extends Controller
 {
     public function index(Request $request)
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'ugs6a1ad2ehhnu919osantvvmn';
+        $sessionToken = 'nf2bnbj4hq7aujkka596vej44n';
 
         // Obtenha as datas de início e fim do request
         $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
@@ -75,7 +76,11 @@ class MapDashboardController extends Controller
             $mappedTickets = [];
         }
 
-        // Passe os dados para a view
-        return view('map-dashboard', ['tickets' => $mappedTickets]);
+        // Buscar o ID do gráfico na tabela links
+        $link = Link::where('user_id', auth()->id())->first();
+        $graphicId = $link ? $link->graphic : '';
+
+        // Passe os dados para a view, incluindo o ID do gráfico
+        return view('graphic', ['tickets' => $mappedTickets, 'graphicId' => $graphicId]);
     }
 }

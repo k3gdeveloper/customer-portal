@@ -5,93 +5,15 @@
         <div class="flex flex-col items-center">
             <div class="w-full bg-white shadow-md rounded-lg ">
                 <div class="bg-gray-800 text-white py-4 px-6 text-lg font-semibold">
-                    {{ __('Incidentes por localidade') }}
+                    {{ __('Tickets') }}
                 </div>
                 <div class="p-6">
-                    <!-- Modal de Detalhes do Ticket -->
-                    <div id="ticket-modal"
-                        class="fixed inset-0 flex hidden items-center justify-center z-10 transition-opacity duration-300 ease-in-out">
-                        <div class="bg-gray-800 bg-opacity-75 w-full h-full absolute"></div>
-                        <div
-                            class="bg-white p-6 rounded-lg max-w-lg w-full shadow-xl relative z-20 transform transition-all">
-                            <button id="close-modal" aria-label="Fechar modal"
-                                class="text-gray-500 hover:text-red-600 absolute top-3 right-3 text-xl focus:outline-none">&times;</button>
-                            <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Detalhes do Ticket</h3>
-                            <div id="modal-ticket-details" class="text-gray-700 space-y-4">
-                                <!-- Conteúdo específico dos detalhes do ticket -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row items-center justify-end gap-4 mb-6">
-                        <!-- Filtros -->
-                        <form action="{{ route('map-dashboard') }}" method="GET" id="filter-form">
-                            <div class="flex gap-4 items-center" id="filter-button">
-                                <input type="date" name="start_date" id="start-date"
-                                    class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <input type="date" name="end_date" id="end-date"
-                                    class="form-input w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <button type="submit"
-                                    class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    Filtrar
-                                </button>
-                                <button type="button" id="clear-filters" onclick="clearFilters()"
-                                    class="bg-gray-400 text-white px-6 py-2 rounded shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                    Limpar Filtros
-                                </button>
-                            </div>
-                        </form>
-
-                        <script>
-                            function clearFilters() {
-                                document.getElementById('start-date').value = '';
-                                document.getElementById('end-date').value = '';
-                                document.getElementById('filter-form').submit();
-                            }
-                        </script>
-
-                    </div>
-
-                    <div class="flex gap-4">
-                        <!-- Mapa -->
-                        <div id="map" class="w-full h-96 rounded-md shadow-md mb-4 z-0"></div>
-
-                        <!-- Detalhes dos Tickets -->
-                        <div id="ticket-details"
-                            class="w-1/3 bg-white p-4 rounded-md shadow-md ml-4  max-h-96 overflow-y-auto transition-opacity hidden opacity-0">
-                            <button id="close-details" class="text-red-500 hover:text-red-800">&times;</button>
-                            <h4 class="text-lg font-semibold mb-2">Detalhes dos Tickets</h4>
-
-                            <!-- Filtros para ordenação -->
-                            <div class="flex flex-col gap-4 mb-6">
-                                <label for="ticket-filter" class="font-semibold">Filtrar Tickets:</label>
-                                <select id="ticket-filter"
-                                    class="form-select w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="id-asc">ID Crescente</option>
-                                    <option value="id-desc">ID Decrescente</option>
-                                    <option value="status">Por Status</option>
-                                </select>
-                                <div id="status-filter">
-                                    <label for="status-select" class="font-semibold">Escolha o Status:</label>
-                                    <select id="status-select"
-                                        class="form-select w-full sm:w-auto border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="1">Novo</option>
-                                        <option value="2">Em atendimento (atribuído)</option>
-                                        <option value="3">Em atendimento (planejado)</option>
-                                        <option value="4">Pendente</option>
-                                        <option value="5">Solucionado</option>
-                                        <option value="6">Fechado</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div id="ticket-info" class="text-sm text-gray-700">
-                                <!-- Detalhes dos tickets serão inseridos aqui -->
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Botões de Localização -->
-                    <div id="location-buttons" class="flex flex-wrap justify-center gap-2 mt-4"></div>
+                    @if ($ticketId)
+                        <iframe src="https://meta.k3gsolutions.com.br/public/dashboard/{{ $ticketId }}" frameborder="0"
+                            height="1280" allowtransparency class="w-full h-150 rounded-md shadow-md mb-4 z-0"></iframe>
+                    @else
+                        <p>Mapa não disponível.</p>
+                    @endif
                 </div>
             </div>
         </div>

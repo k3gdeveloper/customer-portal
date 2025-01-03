@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -69,9 +70,9 @@
                                         </span>
                                     </a>
                                     <ul class="cat-sub-menu">
-                                        <li><a href="map-dashboard">Mapa</a></li>
-                                        <li><a href="dashboard">Tickets</a></li>
-                                        <li><a href="new-post.html">Gráfico</a></li>
+                                        <li><a href="map">Mapa</a></li>
+                                        <li><a href="ticket">Tickets</a></li>
+                                        <li><a href="graphic">Gráfico</a></li>
                                     </ul>
                                 </li>
 
@@ -177,12 +178,17 @@
                     <!-- ! Main nav -->
                     <nav class="main-nav--bg">
                         <div class="container main-nav">
-                            <div class="main-nav-start">
+                            {{-- <div class="main-nav-start">
                                 <div class="search-wrapper">
                                     <i data-feather="search" aria-hidden="true"></i>
                                     <input type="text" placeholder="Enter keywords ..." required>
                                 </div>
+                            </div> --}}
+                            <div class="main-nav-center">
+                                <img src="{{ $logoBase64 }}" alt="Logo" class="navbar-logo" width="150px">
                             </div>
+
+
                             <div class="main-nav-end">
                                 <button class="sidebar-toggle transparent-btn" title="Menu" type="button">
                                     <span class="sr-only">Toggle menu</span>
