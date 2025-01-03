@@ -23,6 +23,3 @@ class ProductController extends Controller
         return view('home', compact('products'));
     }
 }
-
-
-

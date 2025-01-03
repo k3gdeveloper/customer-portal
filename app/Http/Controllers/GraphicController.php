@@ -3,15 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Link; // Certifique-se de ter o modelo Link
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
-class MapDashboardController extends Controller
+class GraphicController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Defina seus tokens aqui
         $appToken = 'vlNi3Fp2MCPwFIInAofxTkCo4xvIBZH9Prq11nqq';
-        $sessionToken = 'oj9kjfjq4q79p7ulksnqcd1und';
+        $sessionToken = 'nf2bnbj4hq7aujkka596vej44n';
+
+        // Obtenha as datas de início e fim do request
+        $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
+        $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : null;
 
         // Faça a requisição GET para a API dos tickets com os tokens no header
         $ticketsResponse = Http::withHeaders([
@@ -35,9 +41,17 @@ class MapDashboardController extends Controller
                 return [$location['id'] => $location];
             });
 
-            // Filtre os tickets para incluir aqueles cujos locations_id estão presentes nas localizações
-            $filteredTickets = collect($tickets)->filter(function ($ticket) use ($locationMap) {
-                return $locationMap->has($ticket['locations_id']);
+            // Se os filtros de data não forem fornecidos, use o mês e ano atuais
+            $filteredTickets = collect($tickets)->filter(function ($ticket) use ($locationMap, $startDate, $endDate) {
+                if ($locationMap->has($ticket['locations_id'])) {
+                    $ticketDate = Carbon::parse($ticket['date_creation']);
+                    if ($startDate && $endDate) {
+                        return $ticketDate->between($startDate, $endDate);
+                    }
+                    // Se não houver filtro de data, inclui todos os tickets válidos
+                    return true;
+                }
+                return false;
             })->values();
 
             // Contar o número de incidentes por localização
@@ -53,6 +67,8 @@ class MapDashboardController extends Controller
                     $ticket['longitude'] = $location['longitude'];
                     $ticket['completename'] = $location['completename'] ?? 'Nome completo não disponível';
                     $ticket['incidents'] = $incidentCount[$ticket['locations_id']] ?? 0;
+                    $ticket['name'] = $ticket['name'];
+                    $ticket['status'] = $ticket['status'];
                 }
                 return $ticket;
             })->all();
@@ -60,7 +76,11 @@ class MapDashboardController extends Controller
             $mappedTickets = [];
         }
 
-        // Passe os dados para a view
-        return view('map-dashboard', ['tickets' => $mappedTickets]);
+        // Buscar o ID do gráfico na tabela links
+        $link = Link::where('user_id', auth()->id())->first();
+        $graphicId = $link ? $link->graphic : '';
+
+        // Passe os dados para a view, incluindo o ID do gráfico
+        return view('graphic', ['tickets' => $mappedTickets, 'graphicId' => $graphicId]);
     }
 }
