@@ -6,7 +6,8 @@
 
             <form class="sign-up-form form w-96" action="{{ route('login') }}" method="POST">
                 <!-- Logo no meio -->
-                <div class="logologin"></div>
+                <div class="bg-no-repeat bg-contain bg-center"
+                    style="background-image: url('../img/png/logo.png'); width: 120px; height: 80px;"></div>
                 <!-- Texto de login abaixo da logo -->
                 <h2 class="login-text mt-4 mb-8" style="text-align: center;">Login</h2>
                 @csrf
@@ -33,9 +34,9 @@
                 <button type="submit" class="form-btn primary-default-btn transparent-btn">Entrar</button>
             </form>
         </article>
-        <footer class="footer-fixed">
-            <p class="text-xs">&copy; Todos os direitos Reservados <span id="currentYear"></span> - Criado por K3G
-                Solutions</p>
+        <footer class="fixed bottom-0 w-full text-white text-center py-4">
+            <p class="text-xs">&copy; Todos os direitos Reservados <span id="currentYear"></span> - Criado por K3G Solutions
+            </p>
         </footer>
     </main>
 
