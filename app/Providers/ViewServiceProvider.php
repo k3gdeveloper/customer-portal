@@ -5,8 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Link;
+use Illuminate\Support\Facades\Log;
 
-class AppServiceProvider extends ServiceProvider
+class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $link = Link::where('user_id', auth()->id())->first();
             $logoBase64 = $link ? $link->image_base64 : '';
+            Log::info('Logo Base64: ' . $logoBase64); // Adicionando log para verificar o valor
             $view->with('logoBase64', $logoBase64);
         });
     }
