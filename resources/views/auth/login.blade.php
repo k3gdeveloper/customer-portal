@@ -2,20 +2,17 @@
 
 @section('content')
     <main class="page-center">
-        <article class="sign-up">
+        <article class="sign-up flex flex-col items-center">
 
-            <form class="sign-up-form form" action="{{ route('login') }}" method="POST">
+            <form class="sign-up-form form w-96" action="{{ route('login') }}" method="POST">
                 <!-- Logo no meio -->
-                <div class="logo">
-                    <img src="URL_DA_LOGO_AQUI" alt="Logo" style="display: block; margin: 0 auto;">
-                </div>
+                <div class="logologin"></div>
                 <!-- Texto de login abaixo da logo -->
-                <h2 class="login-text" style="text-align: center; margin-top: 20px;">Login</h2>
-                <p style="text-align: center;">Acesse sua conta</p>
+                <h2 class="login-text mt-4 mb-8" style="text-align: center;">Login</h2>
                 @csrf
                 <label class="form-label-wrapper">
                     <p class="form-label">Email Address</p>
-                    <input id="email" name="email" type="email" class="form-input" {{-- placeholder="Enter your email" --}} required
+                    <input id="email" name="email" type="email" class="form-input" required
                         value="{{ old('email') }}">
                     @error('email')
                         <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span>
@@ -23,12 +20,11 @@
                 </label>
                 <label class="form-label-wrapper">
                     <p class="form-label">Password</p>
-                    <input id="password" name="password" type="password" class="form-input" {{-- placeholder="Enter your password" --}} required>
+                    <input id="password" name="password" type="password" class="form-input" required>
                     @error('password')
                         <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span>
                     @enderror
                 </label>
-                {{-- <a class="link-info forget-link" href="{{ route('password.request') }}">Forgot your password?</a> --}}
                 <label class="form-checkbox-wrapper">
                     <input id="remember" name="remember" type="checkbox" class="form-checkbox"
                         {{ old('remember') ? 'checked' : '' }}>
@@ -37,5 +33,14 @@
                 <button type="submit" class="form-btn primary-default-btn transparent-btn">Entrar</button>
             </form>
         </article>
+        <footer class="footer-fixed">
+            <p class="text-xs">&copy; Todos os direitos Reservados <span id="currentYear"></span> - Criado por K3G
+                Solutions</p>
+        </footer>
     </main>
+
+    <script>
+        // Define o ano atual no elemento com id "currentYear"
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
 @endsection
