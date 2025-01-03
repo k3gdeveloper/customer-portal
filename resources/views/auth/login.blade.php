@@ -4,7 +4,7 @@
     <main class="page-center">
         <article class="sign-up flex flex-col items-center">
 
-            <form class="sign-up-form form w-96" action="{{ route('login') }}" method="POST">
+            <form class="flex flex-col items-center form w-96" action="{{ route('login') }}" method="POST">
                 <!-- Logo no meio -->
                 <div class="bg-no-repeat bg-contain bg-center"
                     style="background-image: url('../img/png/logo.png'); width: 120px; height: 80px;"></div>
