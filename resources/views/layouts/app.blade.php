@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="{{ asset('css/material-dashboard.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+
+
 </head>
 
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
@@ -36,20 +38,7 @@
                 <!-- Sidebar -->
                 <aside class="sidebar">
                     <div class="sidebar-start">
-                        <div class="sidebar-head">
-                            <a href="/" class="logo-wrapper" title="Home">
-                                <span class="sr-only">Home</span>
-                                <span class="icon logo" aria-hidden="true"></span>
-                                {{--                                 <div class="logo-text">
-                                    <span class="logo-title">Elegant</span>
-                                    <span class="logo-subtitle">Dashboard</span>
-                                </div> --}}
-                            </a>
-                            <button class="sidebar-toggle transparent-btn" title="Menu" type="button">
-                                <span class="sr-only">Toggle menu</span>
-                                <span class="icon menu-toggle" aria-hidden="true"></span>
-                            </button>
-                        </div>
+
                         <div class="sidebar-body">
 
                             <ul class="sidebar-body-menu">
@@ -121,7 +110,7 @@
                                     <span class="msg-counter">7</span>
                                 </li> --}}
                             </ul>
-                            <span class="system-menu__title">system</span>
+                            {{-- <span class="system-menu__title">system</span> --}}
                             <ul class="sidebar-body-menu">
                                 {{--                                 <li>
                                     <a href="appearance.html"><span class="icon edit"
@@ -140,7 +129,7 @@
                                         <li><a href="extention-02.html">Extentions-02</a></li>
                                     </ul>
                                 </li> --}}
-                                <li>
+                                {{--                            <li>
                                     <a class="show-cat-btn" href="#">
                                         <span class="icon user-3" aria-hidden="true"></span>Users
                                         <span class="category__btn transparent-btn" title="Open list">
@@ -155,11 +144,11 @@
                                 </li>
                                 <li>
                                     <a href="#"><span class="icon setting" aria-hidden="true"></span>Settings</a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </div>
-                    <div class="sidebar-footer">
+                    {{--                     <div class="sidebar-footer">
                         <a href="#" class="sidebar-user">
                             <span class="sidebar-user-img">
                                 <picture>
@@ -172,7 +161,22 @@
                                 <span class="sidebar-user__subtitle">Support manager</span>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
+                    {{--                     <div class="sidebar-footer">
+                        <a href="#" class="sidebar-user">
+                            <span class="sidebar-user-img">
+                                <picture>
+                                    <source srcset="{avatar-webp-url}" type="image/webp">
+                                    <img src="{avatar-png-url}" alt="{user-name}">
+                                </picture>
+                            </span>
+                            <div class="sidebar-user-info">
+                                <span class="sidebar-user__title">{user-name}</span>
+                                <span class="sidebar-user__subtitle">{user-role}</span>
+                            </div>
+                        </a>
+                    </div> --}}
+
                 </aside>
                 <div class="main-wrapper">
                     <!-- ! Main nav -->
@@ -211,10 +215,10 @@
                                     <i class="moon-icon" data-feather="moon" aria-hidden="true"></i>
                                 </button>
                                 <div class="notification-wrapper">
-                                    <button class="gray-circle-btn dropdown-btn" title="To messages" type="button">
+                                    {{--                                     <button class="gray-circle-btn dropdown-btn" title="To messages" type="button">
                                         <span class="sr-only">To messages</span>
                                         <span class="icon notification active" aria-hidden="true"></span>
-                                    </button>
+                                    </button> --}}
                                     <ul class="users-item-dropdown notification-dropdown dropdown">
                                         <li>
                                             <a href="##">
@@ -260,17 +264,29 @@
                                     </ul>
                                 </div>
                                 <div class="nav-user-wrapper">
-                                    <button href="##" class="nav-user-btn dropdown-btn" title="My profile"
-                                        type="button">
-                                        <span class="sr-only">My profile</span>
-                                        <span class="nav-user-img">
-                                            <picture>
-                                                <source srcset="./img/avatar/avatar-illustrated-02.webp"
-                                                    type="image/webp"><img src="./img/avatar/avatar-illustrated-02.png"
-                                                    alt="User name">
-                                            </picture>
-                                        </span>
-                                    </button>
+                                    <div class="relative inline-block text-left">
+                                        <button onclick="toggleDropdown()" class="nav-user-btn dropdown-btn"
+                                            title="My profile" type="button">
+                                            <span class="sr-only">My profile</span>
+                                            <span class="nav-user-img">
+                                                <picture>
+                                                    <source srcset="./img/avatar/avatar-illustrated-02.webp"
+                                                        type="image/webp">
+                                                    <img src="./img/avatar/avatar-illustrated-02.png" alt="User name">
+                                                </picture>
+                                            </span>
+                                        </button>
+                                        <!-- Dropdown -->
+                                        <div id="dropdownMenu"
+                                            class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <a href="#"onclick="event.preventDefault(); this.closest('form').submit();"
+                                                    type="button"
+                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                                            </form>
+                                        </div>
+                                    </div>
                                     <ul class="users-item-dropdown nav-user-dropdown dropdown">
                                         <li><a href="##">
                                                 <i data-feather="user" aria-hidden="true"></i>
@@ -324,6 +340,29 @@
     <script src="plugins/feather.min.js"></script>
     <script src="js/script.js"></script>
 
+    <script>
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.classList.toggle('hidden');
+        }
+
+        function deleteAllCookies() {
+            var cookies = document.cookie.split("; ");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+            }
+        }
+
+        function logoutAndRedirect() {
+            // Excluir todos os cookies
+            deleteAllCookies();
+            // Redirecionar para a página de login
+            window.location.href = '/login';
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
