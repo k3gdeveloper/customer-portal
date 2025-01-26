@@ -4,22 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
-use App\Models\UserProductPermission;
+use App\Models\User;
 
 class ProductController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $products = Product::all()->map(function ($product) use ($user) {
-            $permission = UserProductPermission::where('user_id', $user->id)
-                ->where('product_id', $product->id)
-                ->first();
-            $product->is_active = $permission ? $permission->is_active : false;
-            return $product;
-        });
+        $idCompany = $user->id_company; // Obtendo o ID da empresa do usuário logado
 
-        return view('home', compact('products'));
+        // Retorna a visão 'home' com o idCompany
+        return view('home', compact('idCompany'));
     }
 }
