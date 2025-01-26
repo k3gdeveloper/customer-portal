@@ -2,6 +2,15 @@
 
 return [
 
+/*     'rsa_patch' => 'C:\Github\K3G Solutions\customer-portal\storage\rsakey\id_rsa',
+    'rsa_pub_patch' => 'C:\Github\K3G Solutions\customer-portal\storage\rsakey\id_rsa.pub', */
+
+    'rsa_patch' => env('RSA_PATH', 'default_value_if_not_set'),
+    'rsa_pub_patch' => env('RSA_PUB_PATH', 'default_value_if_not_set'),
+
+    'netboxip' => env('NETBOX_IP', 'default_value_if_not_set'),
+    'netboxtoken' => env('NETBOX_TOKEN', 'default_value_if_not_set'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -14,6 +23,9 @@ return [
     */
 
     'name' => env('APP_NAME', 'K3G | Portal do Cliente'),
+
+/*     'rsa_patch' => '/var/www/bkserver/storage/rsakey/id_rsa',
+    'rsa_pub_patch' => '/var/www/bkserver/storage/rsakey/id_rsa.pub', */
 
     /*
     |--------------------------------------------------------------------------
