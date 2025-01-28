@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -21,6 +19,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'group_product_id',
+        'id_company',  // Adicione 'id_company' se necessário
     ];
 
     /**
@@ -44,5 +44,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Defina a relação com o modelo GroupProduct.
+     */
+    public function groupProduct()
+    {
+        return $this->belongsTo(GroupProduct::class, 'group_product_id');
+    }
+
+    /**
+     * Defina a relação com o modelo Company (empresa do usuário).
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'id_company'); // Relacionamento com a empresa
     }
 }

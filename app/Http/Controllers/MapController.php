@@ -3,25 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Link; // Certifique-se de ter o modelo Link
+use App\Models\Link;
+use App\Models\Company;
+use App\Models\User;
 use Carbon\Carbon;
 
 class MapController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\View
     {
-        // Obtenha as datas de início e fim do request
-        $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : null;
-        $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : null;
+        $user = auth()->user();
 
-        // Inicialize uma lista vazia de tickets
+        if (!$user || !$user->id_company) {
+            return redirect('/login')->with('error', 'Usuário não autenticado ou sem empresa associada.');
+        }
+
+        $idCompany = $user->id_company;
+
+        $company = Company::find($idCompany);
+
+        if (!$company || $company->status != 1) {
+            $company = null;
+            $idCompany = null;
+        }
+
+        $link = Link::where('id_company', $idCompany)->first();
+
         $mappedTickets = [];
 
-        // Buscar o ID do gráfico na tabela links
-        $link = Link::where('user_id', auth()->id())->first();
-        $mapId = $link ? $link->map : '';
+        $mapId = $link ? $link->map : null;
 
-        // Passe os dados para a view
-        return view('map', ['tickets' => $mappedTickets, 'mapId' => $mapId]);
+        return view('map', compact('company', 'idCompany', 'mappedTickets', 'mapId'));
     }
+
 }
+

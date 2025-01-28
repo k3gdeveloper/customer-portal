@@ -12,7 +12,7 @@
                         <iframe src="https://meta.k3gsolutions.com.br/public/dashboard/{{ $ticketId }}" frameborder="0"
                             height="1280" allowtransparency class="w-full h-150 rounded-md shadow-md mb-4 z-0"></iframe>
                     @else
-                        <p>Mapa não disponível.</p>
+                        <p>Ticket não disponível.</p>
                     @endif
                 </div>
             </div>

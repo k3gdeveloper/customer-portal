@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 use App\Models\Link;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,9 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Compartilhar a variável logoBase64 com todas as views
         View::composer('*', function ($view) {
-            $link = Link::where('user_id', auth()->id())->first();
-            $logoBase64 = $link ? $link->image_base64 : '';
-            $view->with('logoBase64', $logoBase64);
+            /* $link = Link::where('user_id', auth()->id())->first(); */
+
         });
     }
 
@@ -30,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if(config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }

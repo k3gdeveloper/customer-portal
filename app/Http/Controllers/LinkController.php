@@ -13,8 +13,9 @@ class LinkController extends Controller
         // Encontre o usuário pelo ID
         $user = User::findOrFail($userId);
 
-        // Crie um novo link para o usuário
-        $link = $user->links()->create([
+        // Crie um novo link para a empresa associada ao usuário
+        $link = Link::create([
+            'id_company' => $user->id_company, // Associar o link à empresa do usuário
             'graphic' => 'https://meta.k3gsolutions.com.br/public/dashboard/b70d150f-1c40-4eab-b6aa-fe59f738f3de',
             'map' => 'https://meta.k3gsolutions.com.br/public/dashboard/' . $userId,
             'ticket' => 'https://meta.k3gsolutions.com.br/public/dashboard/ticket-id',
