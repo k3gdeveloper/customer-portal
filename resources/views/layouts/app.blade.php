@@ -27,7 +27,7 @@
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div id="app">
         @auth
-            <a class="skip-link sr-only" href="#main-content">Skip to content</a>
+            <a class="skip-link sr-only" href="#main-content ">Skip to content</a>
             <div class="page-flex">
                 <!-- Sidebar -->
                 <aside class="sidebar">
@@ -54,9 +54,9 @@
                                         </span>
                                     </a>
                                     <ul class="cat-sub-menu" id="monitor">
-                                        <li><a href="map">Mapa</a></li>
-                                        <li><a href="ticket">Tickets</a></li>
-                                        <li><a href="graphic">Gráfico</a></li>
+                                        <li><a href="/map">Mapa</a></li>
+                                        <li><a href="/ticket">Tickets</a></li>
+                                        <li><a href="/graphic">Gráfico</a></li>
                                     </ul>
                                 </li>
 
@@ -71,7 +71,7 @@
                                         </span>
                                     </a>
                                     <ul class="cat-sub-menu" id="backup">
-                                        <li><a href="bkserver/hosts">Hosts</a></li>
+                                        <li><a href="/bkserver/hosts">Hosts</a></li>
                                     </ul>
 
                                 </li>
@@ -79,42 +79,16 @@
                                     <span class="system-menu__title">Executar Comandos</span>
 
                                     <ul class="cat-sub-menu" id="runbackup">
-                                        <li><a href="bkserver/hosts">Backup</a></li>
+                                        <li><a href="/bkserver/hosts">Backup</a></li>
                                     </ul>
-                                    {{--                                     <ul class="cat-sub-menu" id="runbackup">
-                                        <li>
-                                            @isset($idCompany)
-                                                <form method="POST"
-                                                    action="{{ route('sync.devices', ['id_company' => $idCompany]) }}">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-primary">Sincronizar</button>
-                                                </form>
-                                            @else
-                                                <p>ID da empresa não definido</p>
-                                            @endisset
-                                        </li>
-                                    </ul> --}}
-
-                                <li>
-                                    <a href="{{ route('run-syncdevices', ['id_company' => $idCompany]) }}"
+                                </li>
+                                {{--                                 <li>
+                                    <a href="{{ route('run-syncdevices', ['id_company' => $idCompany ?? '']) }}"
                                         class="btn btn-primary">Run Syncdevices</a>
-                                </li>
-
-
-                                @if (session('success'))
-                                    <div class="alert alert-success">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
-
-                                @if (session('error'))
-                                    <div class="alert alert-danger">
-                                        {{ session('error') }}
-                                    </div>
-                                @endif
-
+                                </li> --}}
 
                                 </li>
+
                             </ul>
                         </div>
 
@@ -217,31 +191,37 @@
                                                 </a>
                                             </form>
                                         </div>
+
                                     </div>
+
+
                                 </div>
+                                <footer class="footer">
+                                    <div class="container footer--flex">
+                                        <div class="footer-start">
+                                            <p><span id="current-year"></span> © K3G Solutions - <a
+                                                    href="https://k3gsolutions.com.br" target="_blank"
+                                                    rel="noopener noreferrer">k3gsolutions.com.br</a></p>
+                                        </div>
+                                        {{--                             <ul class="footer-end">
+                            <li><a href="##">About</a></li>
+                            <li><a href="##">Support</a></li>
+                            <li><a href="##">Purchase</a></li>
+                        </ul> --}}
+                                    </div>
+                                </footer>
                             </div>
+                            <!-- Footer -->
+
                         </div>
                     </nav>
 
                     <!-- Main Content -->
-                    <main id="main-content">
+                    <main id="main-content " class="pb-10">
                         @yield('content')
                     </main>
 
-                    <!-- Footer -->
-                    <footer class="footer">
-                        <div class="container footer--flex">
-                            <div class="footer-start">
-                                <p><span id="current-year"></span> © K3G Solutions - <a href="https://k3gsolutions.com.br"
-                                        target="_blank" rel="noopener noreferrer">k3gsolutions.com.br</a></p>
-                            </div>
-                            {{--                             <ul class="footer-end">
-                                <li><a href="##">About</a></li>
-                                <li><a href="##">Support</a></li>
-                                <li><a href="##">Purchase</a></li>
-                            </ul> --}}
-                        </div>
-                    </footer>
+
                 </div>
             </div>
         @else

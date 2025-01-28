@@ -12,6 +12,9 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DeviceController;
 use App\Models\Company;
+use Illuminate\Support\Facades\Log;
+
+
 
 // Redireciona para a página de login ou home se estiver logado
 Route::get('/', function () {
@@ -28,9 +31,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/map', [MapController::class, 'index'])->name('map');
     Route::get('/graphic', [GraphicController::class, 'index'])->name('graphic');
     Route::get('/bkserver/hosts', [BackupController::class, 'index'])->name('bkserver.index');
+    Route::get('/download-backup', [BackupController::class, 'download'])->name('download.backup');
     Route::get('/bkserver/{id}', [BackupController::class, 'show'])->name('bkserver.show');
     Route::post('/compare-backups', [BackupController::class, 'compare'])->name('compare.backups');
-
+    Route::get('/bkserver/hosts/{idCompany}', [BackupController::class, 'index'])->name('backups.index');
+    Route::get('/bkserver/hosts/{id_device}', [BackupController::class, 'show'])->name('backups.show');
+    Route::post('/compare-backups', [BackupController::class, 'compare'])->name('compare.backups');
+    Route::get('/download-backup', [BackupController::class, 'download'])->name('download.backup');
 /*     Route::post('/sync-devices/{id_company}', function ($id_company) {
         Artisan::call('run:syncdevices', ['id_company' => $id_company]);
         return back()->with('message', 'Sincronização iniciada com sucesso!');
@@ -52,10 +59,35 @@ Route::post('/sync-devices/{id_company}', function ($idCompany) {
 })->name('sync.devices');
 
 
-Route::get('/run-syncdevices/{id_company}', function($id_company) {
-    Artisan::call('run:syncdevices', ['id_company' => $id_company]);
-    return redirect()->back()->with('message', 'Sincronização realizada com sucesso!');
+
+
+
+// routes/web.php
+
+Route::get('/run-syncdevices/{id_company}', function ($id_company) {
+    try {
+        // Dispara o Job e retorna sucesso
+        $job = new \App\Jobs\SyncDevicesJob($id_company);
+        $output = $job->handle(); // Executa o Job diretamente
+
+        return response()->json(['message' => 'Sincronização executada com sucesso!', 'output' => $output]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Erro ao executar a sincronização: ' . $e->getMessage()], 500);
+    }
 })->name('run-syncdevices');
+
+
+Route::get('run-syncdevices/{id}/{idCompany}', 'DeviceController@showDetails')->name('run-syncdevices');
+
+
+
+
+
+
+
+
+
+
 
 /* Route::get('/run-syncdevices/{id_company}', function($idCompany) {
     if (!Company::find($idCompany)) {
