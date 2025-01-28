@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })();
 
-    (function () {
+    /*     (function () {
         Chart.defaults.backgroundColor = "#000";
         var darkMode = localStorage.getItem("darkMode");
         var darkModeToggle = document.querySelector(".theme-switcher");
@@ -279,6 +279,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 addData();
+            });
+        }
+    })(); */
+
+    (function () {
+        Chart.defaults.backgroundColor = "#000";
+        var darkMode = localStorage.getItem("darkMode");
+        var darkModeToggle = document.querySelector(".theme-switcher");
+
+        var enableDarkMode = function enableDarkMode() {
+            document.body.classList.add("darkmode");
+            localStorage.setItem("darkMode", "enabled");
+        };
+
+        var disableDarkMode = function disableDarkMode() {
+            document.body.classList.remove("darkmode");
+            localStorage.setItem("darkMode", null);
+        };
+
+        // Enable dark mode if darkMode is not defined or is set to "enabled"
+        if (darkMode === null || darkMode === "enabled") {
+            enableDarkMode();
+        }
+
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener("click", function () {
+                darkMode = localStorage.getItem("darkMode");
+
+                if (darkMode !== "enabled") {
+                    enableDarkMode();
+                } else {
+                    disableDarkMode();
+                }
             });
         }
     })();
