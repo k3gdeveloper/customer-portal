@@ -25,16 +25,13 @@ class SyncBackups extends Command
             'Huawei' => 'display current-configuration | exclude irreversible-cipher | exclude community read cipher | no-more',
             'Datacom' => 'show running-config | nomore',
             'Intelbras' => 'show running-config-devel',
+            'Ubiquiti' => 'cat /tmp/system.cfg',
         ];
 
         $sshUser = 'suporte';
         $sshJumpHost = '189.126.90.0';
         $sshJumpPort = 50422;
-        $rsaKeyPath = env('RSA_PATH');
-        if (!file_exists($rsaKeyPath)) {
-            $this->error("A chave RSA não foi encontrada em: {$rsaKeyPath}.");
-            return 1;
-        }
+        $rsaKeyPath = config('app.rsa_patch');
         $rsaKey = PublicKeyLoader::load(file_get_contents($rsaKeyPath));
 
         foreach (Devices::all() as $device) {
@@ -46,41 +43,53 @@ class SyncBackups extends Command
                     continue;
                 }
 
-                $this->info("Estabelecendo túnel SSH para o dispositivo {$device->name} (ID: {$device->id})...");
+                $this->info("Estabelecendo conexão SSH com o dispositivo {$device->name} (ID: {$device->id})...");
 
-                // Estabelecendo túnel SSH via jump host para o dispositivo
-                $tunnelCommand = "ssh -i \"{$rsaKeyPath}\" -J {$sshUser}@{$sshJumpHost}:{$sshJumpPort} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {$device->user}@{$device->ip} -p {$device->ssh}";
-                exec($tunnelCommand);
+                // Conectando ao jump host
+                $jumpSsh = new SSH2($sshJumpHost, $sshJumpPort, 15); // Timeout de 15 segundos
+                if (!$jumpSsh->login($sshUser, $rsaKey)) {
+                    $this->logError($device, "Falha ao autenticar no jump host.");
+                    continue;
+                }
 
-                $deviceSsh = new SSH2($device->ip, (int)$device->ssh);
-                $deviceSsh->setTimeout(30);
+                $this->info("Conectado ao jump host. Iniciando proxy para o dispositivo {$device->ip}...");
 
-                if (!$deviceSsh->isConnected()) {
-                    $this->logError($device, "Falha ao estabelecer túnel SSH para {$device->name}.");
+                // Criando o comando de proxy para o dispositivo
+                $proxyCommand = "ssh -o StrictHostKeyChecking=no -oHostKeyAlgorithms=+ssh-rsa -o UserKnownHostsFile=/dev/null -p {$device->ssh} {$device->user}@{$device->ip}";
+                $jumpSsh->write("{$proxyCommand}\n");
+                $jumpSsh->exec('export TERM=xterm'); // Configurar PTY para interatividade
+                $jumpSsh->setTimeout(1); // Timeout ajustado para 15 segundos
+
+                // Lendo a resposta inicial
+                $response = $jumpSsh->read();
+                if (preg_match('/password:\s*$/i', $response)) {
+                    $jumpSsh->write("{$device->password}\n");
+                    $response = $jumpSsh->read();
+                }
+
+                if (strpos($response, 'Welcome') === false && strpos($response, 'Last login') === false) {
+                    $this->logError($device, "Erro ao conectar ao dispositivo. Resposta: {$response}");
+                    $jumpSsh->disconnect(); // Desconectando para evitar recursos travados
                     continue;
                 }
 
                 $this->info("Conexão ao dispositivo {$device->name} foi estabelecida!");
 
-                // Autenticação no dispositivo remoto
-                $loginSuccess = $device->password
-                    ? $deviceSsh->login($device->user, $device->password)
-                    : $deviceSsh->login($device->user, $rsaKey);
+                // Executando o comando no dispositivo
+                $this->info("Executando comando no dispositivo: {$deviceCommand}");
+                $jumpSsh->write("{$deviceCommand}\n");
+                $responseSSH = $jumpSsh->read();
 
-                if (!$loginSuccess) {
-                    $this->logError($device, "Falha ao autenticar no dispositivo {$device->name}.");
-                    continue;
-                }
+                $cleanedResponse = str_replace($deviceCommand, '', $responseSSH);
 
-                $this->info("Executando comando no dispositivo {$device->name}...");
-                $responseSSH = $deviceSsh->exec($deviceCommand);
-
-                if (!empty($responseSSH)) {
-                    $this->saveBackup($device, $responseSSH);
+                if (!empty($cleanedResponse)) {
+                    $this->saveBackup($device, $cleanedResponse);
                     $this->info("Backup do dispositivo {$device->name} (ID: {$device->id}) finalizado com sucesso.");
                 } else {
                     $this->logError($device, "Erro: Sem saída do comando para o dispositivo.");
                 }
+
+                $jumpSsh->disconnect(); // Certifique-se de liberar recursos após finalizar
             } catch (\Exception $exception) {
                 $this->logError($device, "Erro ao executar o comando SSH: {$exception->getMessage()}");
             }
@@ -88,6 +97,7 @@ class SyncBackups extends Command
 
         return 0;
     }
+
 
     private function logError($device, $message)
     {
@@ -101,11 +111,11 @@ class SyncBackups extends Command
         $this->error("{$message} para o dispositivo {$device->name} (ID: {$device->id}).");
     }
 
-    private function saveBackup($device, $responseSSH)
+    private function saveBackup($device, $cleanedResponse)
     {
         try {
             $backup = new Backups();
-            $backup->text = $responseSSH;
+            $backup->text = $cleanedResponse;
             $device->backups()->save($backup);
 
             $device->logs()->create([
